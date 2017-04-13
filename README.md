@@ -14,10 +14,10 @@
              ┌───────────────────────────┴───────────────────────┐┌───────┴────────┐
       abc://username:password@example.com:123/path/data?key=value&key2=value2#fragid1
       └┬┘   └─────────────┬─────────────┘   └────┬────┘ └─────────┬─────────┘ └───────┬──────┘ └──┬──┘
-  scheme  user-information     host     port                  query             fragment
+  scheme  user-information     host      port                  query             fragment
 
       urn:example:mammal:monotreme:echidna
-      └┬┘ └────────────────────┬─────────────────────┘
+      └┬┘ └────────────────────────┬─────────────────────────┘
     scheme                path
 ```
 
@@ -97,6 +97,9 @@ String url = new UrlBuilder().scheme("https").host("www.baidu.com").path("/s")
 https://www.baidu.com/s?ie=UTF-8&wd=%E6%B5%8B%E8%AF%95&tfflag=1&abc=one&abc=two#bbb
 ```
 
+- 更多示例
+
+请查看 [UrlBuilderUnitTest.java](https://github.com/ImKarl/UrlBuilder/blob/master/library/src/test/java/cn/imkarl/urlbuilder/UrlBuilderUnitTest.java)
 
 # Thanks
 
