@@ -1,5 +1,6 @@
 # UrlBuilder
 链式API的URL生成器，简单、直观、易用、安全。
+
 [![](https://jitpack.io/v/imkarl/urlbuilder.svg)](https://jitpack.io/#imkarl/urlbuilder)
 
 
