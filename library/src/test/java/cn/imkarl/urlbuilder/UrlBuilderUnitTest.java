@@ -158,4 +158,25 @@ public class UrlBuilderUnitTest {
         assertTrue(url.equals(buildUrl));
     }
 
+    @Test
+    public void testComplex() throws Exception {
+        final String url = "https://www.baidu.com/s?ie=UTF-8&wd=%E6%B5%8B%E8%AF%95&tfflag=1&abc=one&abc=two#bbb";
+        String buildUrl = new UrlBuilder().scheme("https").host("www.baidu.com").path("/s")
+                .appendQuery("ie", "UTF-8")
+                .putQuery("wd", "test")
+                .putQuery("wd", "测试")
+                .appendQuery("tfflag", "0")
+                .putQuery("tfflag", "1")
+                .appendQuery("abc", "one")
+                .appendQuery("abc", "two")
+                .fragment("aaa")
+                .fragment("bbb")
+                .build();
+
+        log("------------ testFragmentByPathAndQuery ------------");
+        log("original=\t"+url);
+        log("buildUrl=\t"+buildUrl);
+        assertTrue(url.equals(buildUrl));
+    }
+
 }
