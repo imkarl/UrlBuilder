@@ -34,7 +34,15 @@ captures/
 
 # Intellij
 *.iml
-.idea/workspace.xml
+*.ipr
+*.iws
+.idea/
 
 # Keystore files
 *.jks
+
+# OSX files
+.DS_Store
+
+# Android project files
+.externalNativeBuild
