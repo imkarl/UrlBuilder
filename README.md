@@ -63,7 +63,7 @@ https://www.baidu.com/
 - 完整形态
 
 ```
-String url = new UrlBuilder().scheme("https").host("www.baidu.com").path("/s")
+String url = new UrlBuilder().scheme("https").host("www.baidu.com").port(80).path("/s")
                     .putQuery("ie", "UTF-8")
                     .putQuery("wd", "测试")
                     .fragment("abc")
@@ -72,7 +72,7 @@ String url = new UrlBuilder().scheme("https").host("www.baidu.com").path("/s")
 
 输出：
 ```
-https://www.baidu.com/s?ie=UTF-8&wd=%E6%B5%8B%E8%AF%95#abc
+https://www.baidu.com:80/s?ie=UTF-8&wd=%E6%B5%8B%E8%AF%95#abc
 ```
 
 
