@@ -16,6 +16,17 @@ public class UrlBuilderUnitTest {
 
 
     @Test
+    public void testSimple() throws Exception {
+        final String url = "http://www.baidu.com";
+        String buildUrl = new UrlBuilder().host("www.baidu.com").build();
+
+        log("------------ testSimple ------------");
+        log("original=\t"+url);
+        log("buildUrl=\t"+buildUrl);
+        assertTrue(url.equals(buildUrl));
+    }
+
+    @Test
     public void testHost() throws Exception {
         final String url = "https://www.baidu.com/";
         String buildUrl = new UrlBuilder().scheme("https").host("www.baidu.com").path("/").build();

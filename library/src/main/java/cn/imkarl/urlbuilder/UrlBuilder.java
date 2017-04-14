@@ -14,6 +14,7 @@ import java.net.URLEncoder;
  * @version imkarl 2017-04
  *
  * 格式形如：
+ *     [<scheme>:]<scheme-specific-part>[#<fragment>]
  *     [scheme:][//authority][path][?query][#fragment]
  *     [scheme:][//host:port][path][?query][#fragment]
  *
@@ -35,6 +36,8 @@ import java.net.URLEncoder;
  * @see <a href="https://en.wikipedia.org/wiki/Uniform_Resource_Identifier">Uniform Resource Identifier</a>
  */
 public final class UrlBuilder {
+
+    private static final String DEFAULT_SCHEME = "http";
 
     private String scheme;          // null ==> relative URI
     private String host;            // null ==> registry-based
@@ -136,10 +139,14 @@ public final class UrlBuilder {
 
 
     public String build() {
+        checkArguments();
+
         URL url = buildURL();
         return url==null ? null : url.toString();
     }
     public URL buildURL() {
+        checkArguments();
+
         String query = this.query==null ? null : this.query.build(true);
 
         StringBuilder fileBuilder = new StringBuilder();
@@ -160,12 +167,14 @@ public final class UrlBuilder {
         }
 
         try {
-            return new URL(scheme, host, port, fileBuilder.toString());
+            return new URL(Util.isEmpty(scheme) ?DEFAULT_SCHEME : scheme, host, port, fileBuilder.toString());
         } catch (MalformedURLException e) {
             return null;
         }
     }
     public URI buildURI() {
+        checkArguments();
+
         String authority = null;
         if (Util.isNotEmpty(host)) {
             if (port > 0) {
@@ -178,13 +187,15 @@ public final class UrlBuilder {
         String query = this.query==null ? null : this.query.build(false);
 
         try {
-            return new URI(scheme, authority, path, query, fragment);
+            return new URI(Util.isEmpty(scheme) ?DEFAULT_SCHEME : scheme, authority, path, query, fragment);
         } catch (URISyntaxException e) {
             return null;
         }
     }
     public Uri buildUri() {
-        Uri.Builder builder = new Uri.Builder().scheme(scheme).path(path).fragment(fragment);
+        checkArguments();
+
+        Uri.Builder builder = new Uri.Builder().scheme(Util.isEmpty(scheme) ?DEFAULT_SCHEME : scheme).path(path).fragment(fragment);
         if (!Util.isEmpty(host)) {
             if (port > 0) {
                 builder.authority(host + ":" + port);
@@ -198,6 +209,15 @@ public final class UrlBuilder {
             }
         }
         return builder.build();
+    }
+
+    /**
+     * 检查参数是否合法
+     */
+    private void checkArguments() {
+        if (Util.isEmpty(host)) {
+            throw new IllegalArgumentException("'host' must be non empty.");
+        }
     }
 
     @Override
