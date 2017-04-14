@@ -1,5 +1,5 @@
 # UrlBuilder
-链式API的URL生成器，简单、直观、易用、安全。
+链式风格的URL生成器，简单、直观、易用、安全。
 
 [![](https://jitpack.io/v/imkarl/urlbuilder.svg)](https://jitpack.io/#imkarl/urlbuilder)
 
@@ -22,27 +22,21 @@
 ```
 
 
+# Features
+
+- 可以方便地转化为`Uri`、`URI`、`URL`、`String`
+- [`UrlQuery`](https://github.com/ImKarl/UrlBuilder/blob/master/library/src/main/java/cn/imkarl/urlbuilder/UrlQuery.java)
+支持更多健全的操作API（`appendQuery` \ `putQuery`）
+- 自动完成URL转码（`URLEncoder.encode(str, "UTF-8")`）
+- 自动补全`URL Scheme`（缺省值："http"）
+
+
 # Usage
 
-- Step 1. Add the JitPack repository to your build file
-
-把 JitPack repository 添加到`build.gradle`文件中`repositories`的末尾:
+Gradle:
 
 ```
-allprojects {
-    repositories {
-        ...
-        maven { url 'https://jitpack.io' }
-    }
-}
-```
-
-- Step 2. Add the dependency
-
-在你的app `build.gradle`的`dependencies`中添加依赖
-
-```
-compile 'com.github.imkarl:urlbuilder:[latestVersion]'
+compile 'com.github.ImKarl:UrlBuilder:[latestVersion]'
 ```
 
 
@@ -51,12 +45,10 @@ compile 'com.github.imkarl:urlbuilder:[latestVersion]'
 - 最简单的例子
 
 ```
-String url = new UrlBuilder().scheme("https").host("www.baidu.com").path("/").build();
-```
+String url = new UrlBuilder().host("www.baidu.com").build();
 
 输出：
-```
-https://www.baidu.com/
+> http://www.baidu.com
 ```
 
 
@@ -68,11 +60,9 @@ String url = new UrlBuilder().scheme("https").host("www.baidu.com").port(80).pat
                     .putQuery("wd", "测试")
                     .fragment("abc")
                     .build();
-```
 
 输出：
-```
-https://www.baidu.com:80/s?ie=UTF-8&wd=%E6%B5%8B%E8%AF%95#abc
+> https://www.baidu.com:80/s?ie=UTF-8&wd=%E6%B5%8B%E8%AF%95#abc
 ```
 
 
@@ -90,12 +80,11 @@ String url = new UrlBuilder().scheme("https").host("www.baidu.com").path("/s")
                     .fragment("aaa")
                     .fragment("bbb")
                     .build();
-```
 
 输出：
+> https://www.baidu.com/s?ie=UTF-8&wd=%E6%B5%8B%E8%AF%95&tfflag=1&abc=one&abc=two#bbb
 ```
-https://www.baidu.com/s?ie=UTF-8&wd=%E6%B5%8B%E8%AF%95&tfflag=1&abc=one&abc=two#bbb
-```
+
 
 - 更多示例
 
