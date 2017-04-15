@@ -174,7 +174,7 @@ public final class UrlBuilder {
     public URL toURL() {
         checkArguments();
 
-        String query = this.query==null ? null : this.query.build(false);
+        String query = (this.query == null || this.query.isEmpty()) ? null : this.query.build(false);
 
         StringBuilder fileBuilder = new StringBuilder();
         if (path != null) {
@@ -207,7 +207,7 @@ public final class UrlBuilder {
             }
         }
 
-        String query = this.query==null ? null : this.query.build(false);
+        String query = (this.query == null || this.query.isEmpty()) ? null : this.query.build(false);
 
         try {
             return new URI(Util.isEmpty(scheme) ?DEFAULT_SCHEME : scheme, authority, (path==null?null:path.build(false)), query, fragment);
@@ -226,7 +226,7 @@ public final class UrlBuilder {
                 builder.authority(host);
             }
         }
-        if (query != null) {
+        if (query != null && !Util.isEmpty(query.getParams())) {
             for (Part<String, String> item : query.getParams()) {
                 builder.appendQueryParameter(item.getKey(), item.getValue());
             }

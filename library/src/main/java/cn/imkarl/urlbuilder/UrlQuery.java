@@ -60,6 +60,10 @@ public class UrlQuery {
         return this;
     }
 
+    public boolean isEmpty() {
+        return Util.isEmpty(params);
+    }
+
 
     /**
      * 构建Query string，前面不带'?'（对key-value进行URL编码处理）
@@ -119,6 +123,10 @@ public class UrlQuery {
     public static UrlQuery parse(String query) {
         UrlQuery urlQuery = new UrlQuery();
 
+        if (Util.isEmpty(query)) {
+            return urlQuery;
+        }
+
         int ind = query.indexOf('#');
         query = ind < 0 ? query: query.substring(0, ind);
         int q = query.lastIndexOf('?');
@@ -131,8 +139,8 @@ public class UrlQuery {
             for (String part : parts) {
                 int equation = part.indexOf('=');
                 if (equation != -1) {
-                    String key = part.substring(equation + 1);
-                    String value = part.substring(0, equation);
+                    String key = part.substring(0, equation);
+                    String value = part.substring(equation + 1);
                     urlQuery.append(UrlBuilder.decode(key), UrlBuilder.decode(value));
                 }
             }
