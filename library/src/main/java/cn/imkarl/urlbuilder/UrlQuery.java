@@ -1,6 +1,7 @@
 package cn.imkarl.urlbuilder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -17,31 +18,17 @@ public class UrlQuery {
 
     public UrlQuery() {
     }
-    public UrlQuery(Map<String, String> params) {
-        this.params = new ArrayList<>();
-        if (params != null && !params.isEmpty()) {
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                if (Util.isNotEmpty(entry.getKey())) {
-                    this.params.add(new Part<>(entry.getKey(), entry.getValue()));
-                }
-            }
-        }
-    }
-    public UrlQuery(Collection<Part<String, String>> params) {
-        if (params != null && !params.isEmpty()) {
-            this.params = new ArrayList<>(params);
-        } else {
-            this.params = new ArrayList<>();
-        }
-    }
 
     /**
      * 添加query，不论是否已存在相同KEY
      */
-    public UrlQuery appendQuery(String key, String value) {
+    public UrlQuery append(String key, String value) {
         if (Util.isEmpty(key)) {
             return this;
         }
+
+        key = key.trim();
+        value = Util.isEmpty(value) ? "" : value.trim();
 
         if (this.params == null) {
             this.params = new ArrayList<>();
@@ -53,10 +40,12 @@ public class UrlQuery {
     /**
      * 如果已存在相同KEY，则替换之前所有的
      */
-    public UrlQuery putQuery(String key, String value) {
+    public UrlQuery put(String key, String value) {
         if (Util.isEmpty(key)) {
             return this;
         }
+
+        key = key.trim();
 
         if (this.params != null && !this.params.isEmpty()) {
             Iterator<Part<String, String>> it = this.params.iterator();
@@ -67,22 +56,25 @@ public class UrlQuery {
                 }
             }
         }
-        appendQuery(key, value);
+        append(key, value);
         return this;
-    }
-
-    public List<Part<String, String>> getParams() {
-        return params;
     }
 
 
     /**
+     * 构建Query string，前面不带'?'（对key-value进行URL编码处理）
+     * @return 如果没有任何内容，则返回空字符串""
+     */
+    public String build() {
+        return build(true);
+    }
+    /**
      * 构建Query string，前面不带'?'
      * @param encode 是否需要对key-value进行URL编码处理
-     * @return 如果没有任何内容，则返回null
+     * @return 如果没有任何内容，则返回空字符串""
      */
     public String build(boolean encode) {
-        String query = null;
+        String query = "";
         if (params != null && !params.isEmpty()) {
             StringBuilder queryBuiler = new StringBuilder();
             for (Part<String, String> item : params) {
@@ -98,9 +90,65 @@ public class UrlQuery {
         return query;
     }
 
+
+    public static UrlQuery from(Map<String, String> params) {
+        UrlQuery urlQuery = new UrlQuery();
+        urlQuery.params = new ArrayList<>();
+        if (params != null && !params.isEmpty()) {
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                if (Util.isNotEmpty(entry.getKey())) {
+                    urlQuery.params.add(new Part<>(entry.getKey(), entry.getValue()));
+                }
+            }
+        }
+        return urlQuery;
+    }
+    public static UrlQuery from(Collection<Part<String, String>> params) {
+        UrlQuery urlQuery = new UrlQuery();
+        if (params != null && !params.isEmpty()) {
+            urlQuery.params = new ArrayList<>(params);
+        } else {
+            urlQuery.params = new ArrayList<>();
+        }
+        return urlQuery;
+    }
+    public static UrlQuery from(Part<String, String>... params) {
+        return from(Arrays.asList(params));
+    }
+
+    public static UrlQuery parse(String query) {
+        UrlQuery urlQuery = new UrlQuery();
+
+        int ind = query.indexOf('#');
+        query = ind < 0 ? query: query.substring(0, ind);
+        int q = query.lastIndexOf('?');
+        if (q != -1) {
+            query = query.substring(q+1);
+        }
+
+        String[] parts = query.split("&");
+        if (!Util.isEmpty(parts)) {
+            for (String part : parts) {
+                int equation = part.indexOf('=');
+                if (equation != -1) {
+                    String key = part.substring(equation + 1);
+                    String value = part.substring(0, equation);
+                    urlQuery.append(UrlBuilder.decode(key), UrlBuilder.decode(value));
+                }
+            }
+        }
+
+        return urlQuery;
+    }
+
+
     @Override
     public String toString() {
         return build(false);
+    }
+
+    public List<Part<String, String>> getParams() {
+        return params;
     }
 
 }
