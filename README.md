@@ -42,53 +42,104 @@ compile 'com.github.ImKarl:UrlBuilder:[latestVersion]'
 
 # Sample
 
-- 最简单的例子
+- 生成URL
 
 ```
-String url = new UrlBuilder().host("www.baidu.com").build();
-
-输出：
-> http://www.baidu.com
-```
-
-
-- 完整形态
-
-```
-String url = new UrlBuilder().scheme("https").host("www.baidu.com").port(80).path("/s")
-                    .putQuery("ie", "UTF-8")
-                    .putQuery("wd", "测试")
-                    .fragment("abc")
-                    .build();
-
-输出：
-> https://www.baidu.com:80/s?ie=UTF-8&wd=%E6%B5%8B%E8%AF%95#abc
-```
-
-
-- 更复杂的场景
-
-```
-String url = new UrlBuilder().scheme("https").host("www.baidu.com").path("/s")
+UrlQuery query = new UrlQuery()
                     .appendQuery("ie", "UTF-8")
                     .putQuery("wd", "test")
                     .putQuery("wd", "测试")
                     .appendQuery("tfflag", "0")
                     .putQuery("tfflag", "1")
                     .appendQuery("abc", "one")
-                    .appendQuery("abc", "two")
+                    .appendQuery("abc", "two");
+
+// host 为必要参数
+String url = new UrlBuilder().scheme("https").host("www.baidu.com").path("/s")
+                    .query(query)
                     .fragment("aaa")
                     .fragment("bbb")
                     .build();
 
-输出：
-> https://www.baidu.com/s?ie=UTF-8&wd=%E6%B5%8B%E8%AF%95&tfflag=1&abc=one&abc=two#bbb
+输出：`url`
+> "https://www.baidu.com/s?ie=UTF-8&wd=%E6%B5%8B%E8%AF%95&tfflag=1&abc=one&abc=two#bbb"
+```
+
+
+- 解析URL
+
+```
+String url = "https://%E6%B5%8B%E8%AF%95.baidu.com/s/%E6%B5%8B%E8%AF%95/?ie=UTF-8&wd=%E6%B5%8B%E8%AF%95&tfflag=1&abc=one&abc=two#%E6%B5%8B%E8%AF%95";
+UrlBuilder urlBuilder = UrlBuilder.parse(url);
+boolean compare = url.equals(urlBuilder.build());
+String host = urlBuilder.getHost();
+
+String queryString = "?ie=UTF-8&wd=%E6%B5%8B%E8%AF%95&tfflag=1&abc=one&abc=two#%E6%B5%8B%E8%AF%95";
+String query = UrlQuery.parse(queryString).build(false);
+
+输出：`compare`
+> true
+
+输出：`host`
+> "测试.baidu.com"
+
+输出：`strQuery`
+> "ie=UTF-8&wd=测试&tfflag=1&abc=one&abc=two"
+```
+
+
+- `Uri`、`URI`、`URL`之间相互转换
+
+```
+Uri uri = Uri.parse("http://www.baidu.com/");
+UrlBuilder urlBuilder = UrlBuilder.from(uri);
+Uri newUri = urlBuilder.toUri();
+
+boolean compare = uri.equals(newUri);
+String url = urlBuilder.build();
+
+输出：`compare`
+> true
+
+输出：`url`
+> "http://www.baidu.com/"
+```
+
+```
+URI uri = URI.create("http://www.baidu.com/");
+UrlBuilder urlBuilder = UrlBuilder.from(uri);
+URI newUri = urlBuilder.toURI();
+
+boolean compare = uri.equals(newUri);
+String url = urlBuilder.build();
+
+输出：`compare`
+> true
+
+输出：`url`
+> "http://www.baidu.com/"
+```
+
+```
+URL uri = new URL("http://www.baidu.com/");
+UrlBuilder urlBuilder = UrlBuilder.from(uri);
+URL newUri = urlBuilder.toURL();
+
+boolean compare = uri.equals(newUri);
+String url = urlBuilder.build();
+
+输出：`compare`
+> true
+
+输出：`url`
+> "http://www.baidu.com/"
 ```
 
 
 - 更多示例
 
 请查看 [UrlBuilderUnitTest.java](https://github.com/ImKarl/UrlBuilder/blob/master/library/src/test/java/cn/imkarl/urlbuilder/UrlBuilderUnitTest.java)
+
 
 # Thanks
 
